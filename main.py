@@ -8,16 +8,26 @@ def main():
     df = pd.read_csv(ruta_csv)
     print("[INFO] Datos leídos del CSV:")
     print(df.shape)
-    print(df.head())
 
-    database = DataBase()
-    database.insert_data(df, nombre_tabla)
-    print(f"[INFO] Datos insertados en la tabla '{nombre_tabla}'.")
+    db = DataBase()
 
-    df_2 = database.read_data(nombre_tabla)
-    print("[INFO] Datos leídos desde la base de datos:")
-    print(df_2.shape)
-    print(df_2.head())
+    # CREATE
+    db.insert_data(df, nombre_tabla)
+
+    # READ
+    data = db.read_data(nombre_tabla)
+    print("[INFO] Lectura de datos completada")
+
+    # UPDATE: ejemplo - cambia 'Political Affiliation' a 'Ninguna' donde esté vacía
+    db.update_data(nombre_tabla, "Political_Affiliation = 'Ninguna'", "Political_Affiliation IS NULL")
+
+    # DELETE: ejemplo - elimina registros sin edad
+    db.delete_data(nombre_tabla, "`What is your age?` IS NULL")
+
+    # Confirmación final
+    data_final = db.read_data(nombre_tabla)
+    print("[INFO] Resultado final después de UPDATE y DELETE:")
+    print(data_final.head())
 
 if __name__ == "__main__":
     main()

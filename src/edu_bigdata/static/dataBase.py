@@ -3,20 +3,11 @@ import sqlite3
 import pandas as pd
 
 class DataBase:
-    """
-    Clase para la gestión de datos en una base SQLite.
-    Permite insertar DataFrames, leer tablas y cargar múltiples CSV automáticamente.
-    """
-
     def __init__(self, db_path="src/edu_bigdata/static/db/cafe_estudio.sqlite"):
         self.db_name = db_path
         os.makedirs(os.path.dirname(self.db_name), exist_ok=True)
 
     def insert_data(self, df=pd.DataFrame(), nom_table="tabla"):
-        """
-        Inserta un DataFrame en la base de datos como una tabla.
-        Reemplaza la tabla si ya existe.
-        """
         try:
             if df.empty:
                 print(f"DataFrame vacío. No se insertó en la tabla '{nom_table}'.")
@@ -28,9 +19,6 @@ class DataBase:
             print(f"Error al guardar los datos en '{nom_table}':", e)
 
     def read_data(self, nom_table=""):
-        """
-        Lee una tabla de la base de datos y la retorna como DataFrame.
-        """
         try:
             if not nom_table:
                 raise ValueError("Debes proporcionar un nombre de tabla.")
@@ -43,23 +31,24 @@ class DataBase:
             print(f"Error al leer los datos de '{nom_table}':", e)
             return pd.DataFrame()
 
-    def insert_all_csvs(self, csv_folder="src/edu_bigdata/static/csv"):
-        """
-        Inserta todos los archivos CSV de una carpeta en la base de datos.
-        Usa el nombre del archivo (sin extensión) como nombre de tabla.
-        """
+    def update_data(self, nom_table, set_clause, where_clause="1=1"):
         try:
-            archivos = [f for f in os.listdir(csv_folder) if f.endswith(".csv")]
-            if not archivos:
-                print("No se encontraron archivos CSV en la carpeta.")
-                return
-
-            for file in archivos:
-                path = os.path.join(csv_folder, file)
-                table = os.path.splitext(file)[0].lower().replace("-", "_")
-                df = pd.read_csv(path)
-                self.insert_data(df=df, nom_table=table)
-
-            print("Todos los archivos CSV fueron insertados en la base de datos.")
+            with sqlite3.connect(self.db_name) as conn:
+                query = f"UPDATE {nom_table} SET {set_clause} WHERE {where_clause}"
+                cursor = conn.cursor()
+                cursor.execute(query)
+                conn.commit()
+            print(f"Datos actualizados en '{nom_table}' con condición: {where_clause}")
         except Exception as e:
-            print("Error al insertar CSVs en la base de datos:", e)
+            print(f"Error al actualizar datos:", e)
+
+    def delete_data(self, nom_table, where_clause="1=1"):
+        try:
+            with sqlite3.connect(self.db_name) as conn:
+                query = f"DELETE FROM {nom_table} WHERE {where_clause}"
+                cursor = conn.cursor()
+                cursor.execute(query)
+                conn.commit()
+            print(f"Registros eliminados de '{nom_table}' con condición: {where_clause}")
+        except Exception as e:
+            print(f"Error al eliminar datos:", e)

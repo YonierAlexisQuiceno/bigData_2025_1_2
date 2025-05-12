@@ -32,4 +32,4 @@ jobs:
         run: pip install -e .
 
       - name: Paso 5 - Ejecutar Script
-        run: python hola.py
+        run: python main.py

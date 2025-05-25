@@ -28,11 +28,11 @@ jobs:
       - name: Paso 5 - Actualizar pip
         run: pip install --upgrade pip
 
-      - name: Paso 6 - Instalar dependencias requeridas
-        run: pip install pandas openpyxl requests
+      - name: Paso 6 - Instalar dependecias
+        run: pip install -e .
 
       - name: Paso 7 - Ejecutar Script Principal
-        run: python main.py
+        run: python src/edu_bigdata/main.py
 
       - name: Paso 8 - Crear commit automático
         uses: stefanzweifel/git-auto-commit-action@v5

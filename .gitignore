@@ -172,3 +172,6 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Ignorar base de datos específica del proyecto
+src/edu_bigdata/static/db/cafe_estudio.sqlite

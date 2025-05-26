@@ -32,7 +32,7 @@ jobs:
         run: pip install -e .
 
       - name: Paso 7 - Ejecutar Script Principal
-        run: main.py
+        run: python main.py
 
       - name: Paso 8 - Crear commit automático
         uses: stefanzweifel/git-auto-commit-action@v5
